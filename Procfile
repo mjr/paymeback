@@ -1,0 +1,1 @@
+web: gunicorn paymeback.wsgi --log-file -
