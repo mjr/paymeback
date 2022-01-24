@@ -168,3 +168,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'JSON_UNDERSCOREIZE': {'no_underscore_before_number': True},
 }
+
+OAUTH2_PROVIDER = {
+    'OAUTH2_BACKEND_CLASS': 'oauth2_provider.oauth2_backends.JSONOAuthLibCore',
+}
