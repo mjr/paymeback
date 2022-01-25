@@ -1,4 +1,7 @@
+from django.contrib.auth import password_validation
+
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from .models import User
 
@@ -36,3 +39,21 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_refresh_token(self, obj):
         return self.context['refresh_token']
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        max_length=150, validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'full_name')
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
+        return value
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
