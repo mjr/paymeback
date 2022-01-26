@@ -16,4 +16,4 @@ class ChargeViewSet(viewsets.ModelViewSet):
         return self.request.user.charges.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(owner=self.request.user)
