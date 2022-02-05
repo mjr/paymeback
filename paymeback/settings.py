@@ -35,8 +35,9 @@ INSTALLED_APPS = [
     'behaviors.apps.BehaviorsConfig',
     'simple_history',
     'corsheaders',
-    'oauth2_provider',
     'rest_framework',
+    'django_filters',
+    'oauth2_provider',
 ]
 
 MIDDLEWARE = [

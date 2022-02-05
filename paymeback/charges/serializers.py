@@ -16,4 +16,5 @@ class ChargeSerializer(serializers.ModelSerializer):
             'debtor_phone',
             'details',
             'debtor',
+            'paid',
         )
