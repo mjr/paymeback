@@ -28,7 +28,7 @@ class ChargeViewSet(viewsets.ModelViewSet):
     filterset_class = ChargeFilter
 
     def get_queryset(self):
-        return self.request.user.charges.all()
+        return self.request.user.charges.filter(deleted__isnull=True)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
