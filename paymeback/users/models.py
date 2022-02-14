@@ -68,3 +68,13 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def get_late_amount(self):
+        return self.charges.filter(
+            paid=False, date_to_receive__lt=timezone.now()
+        ).aggregate(value=models.Sum('value'))['value']
+
+    def get_total_amount_borrowed(self):
+        return self.charges.filter(paid=False).aggregate(value=models.Sum('value'))[
+            'value'
+        ]

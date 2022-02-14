@@ -1,9 +1,13 @@
+from django.utils import timezone
+
 from rest_framework import serializers
 
 from .models import Charge
 
 
 class ChargeSerializer(serializers.ModelSerializer):
+    is_late = serializers.SerializerMethodField()
+
     class Meta:
         model = Charge
         fields = (
@@ -17,4 +21,8 @@ class ChargeSerializer(serializers.ModelSerializer):
             'details',
             'debtor',
             'paid',
+            'is_late',
         )
+
+    def get_is_late(self, obj):
+        return not obj.paid and obj.date_to_receive < timezone.now()
