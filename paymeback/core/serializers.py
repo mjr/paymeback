@@ -8,7 +8,7 @@ from paymeback.users.models import User
 class InsightSerializer(serializers.ModelSerializer):
     late_amount = serializers.SerializerMethodField()
     total_amount_borrowed = serializers.SerializerMethodField()
-    charges = ChargeSerializer(many=True)
+    charges = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -23,3 +23,6 @@ class InsightSerializer(serializers.ModelSerializer):
 
     def get_total_amount_borrowed(self, obj):
         return format_currency(obj.get_total_amount_borrowed())
+
+    def get_charges(self, obj):
+        return ChargeSerializer(obj.charges.filter(deleted__isnull=True), many=True).data
