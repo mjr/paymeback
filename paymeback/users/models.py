@@ -1,7 +1,10 @@
+from decimal import Decimal
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -71,10 +74,10 @@ class User(AbstractBaseUser, PermissionsMixin, BaseModel):
 
     def get_late_amount(self):
         return self.charges.filter(
-            paid=False, date_to_receive__lt=timezone.now()
-        ).aggregate(value=models.Sum('value'))['value']
+            deleted__isnull=True, paid=False, date_to_receive__lt=timezone.now()
+        ).aggregate(value=Coalesce(models.Sum('value'), Decimal('0')))['value']
 
     def get_total_amount_borrowed(self):
-        return self.charges.filter(paid=False).aggregate(value=models.Sum('value'))[
-            'value'
-        ]
+        return self.charges.filter(deleted__isnull=True, paid=False).aggregate(
+            value=Coalesce(models.Sum('value'), Decimal('0'))
+        )['value']
